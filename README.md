@@ -1,6 +1,4 @@
-from pathlib import Path
-
-readme = """# 📊 Swiggy Sales Analysis Dashboard
+📊 Swiggy Sales Analysis Dashboard
 
 ![Excel](https://img.shields.io/badge/Tool-Microsoft%20Excel-green)
 ![Dashboard](https://img.shields.io/badge/Project-Dashboard-blue)
