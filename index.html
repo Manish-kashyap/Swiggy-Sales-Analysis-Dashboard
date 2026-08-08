@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>Swiggy Sales Analytics Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* =========================================================
+   RESET + VARIABLES
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --swiggy:#fc8019;
+    --swiggy-dark:#e85d04;
+    --swiggy-light:#fff0e2;
+
+    --navy:#102a43;
+    --navy-2:#173f5f;
+
+    --bg:#f7f9fc;
+    --card:#ffffff;
+    --text:#17202a;
+    --muted:#718096;
+
+    --green:#18a673;
+
+    --sidebar-width:245px;
+
+    --shadow:0 14px 38px rgba(16,42,67,.08);
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    width:100%;
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color:var(--text);
+
+    background:
+        radial-gradient(
+            circle at 0% 0%,
+            rgba(252,128,25,.15),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 100% 100%,
+            rgba(23,63,95,.10),
+            transparent 25%
+        ),
+        var(--bg);
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND ANIMATION
+========================================================= */
+
+.bg-blob{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(80px);
+    pointer-events:none;
+    z-index:-2;
+    opacity:.35;
+}
+
+.blob-one{
+    width:250px;
+    height:250px;
+    background:#ffb067;
+    top:-100px;
+    left:-90px;
+    animation:blobMove1 9s ease-in-out infinite alternate;
+}
+
+.blob-two{
+    width:280px;
+    height:280px;
+    background:#9bc8e7;
+    right:-120px;
+    bottom:-120px;
+    animation:blobMove2 11s ease-in-out infinite alternate;
+}
+
+@keyframes blobMove1{
+    to{
+        transform:
+            translate(45px,35px)
+            scale(1.15);
+    }
+}
+
+@keyframes blobMove2{
+    to{
+        transform:
+            translate(-45px,-35px)
+            scale(1.1);
+    }
+}
+
+
+/* =========================================================
+   MOBILE MENU OVERLAY
+========================================================= */
+
+.mobile-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(3px);
+    z-index:90;
+}
+
+.mobile-overlay.show{
+    display:block;
+}
+
+
+/* =========================================================
+   APP WRAPPER
+========================================================= */
+
+.app{
+    width:min(1500px,96%);
+    margin:20px auto;
+
+    display:grid;
+    grid-template-columns:var(--sidebar-width) minmax(0,1fr);
+
+    gap:20px;
+
+    align-items:start;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar{
+    width:var(--sidebar-width);
+
+    min-height:
+        calc(100vh - 40px);
+
+    position:sticky;
+    top:20px;
+
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(252,128,25,.25),
+            transparent 27%
+        ),
+        linear-gradient(
+            160deg,
+            #071b2a,
+            #102f48 60%,
+            #173f5f
+        );
+
+    border-radius:28px;
+
+    padding:23px 16px;
+
+    box-shadow:
+        0 25px 60px
+        rgba(16,42,67,.24);
+
+    overflow:hidden;
+
+    z-index:100;
+}
+
+
+/* Brand */
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    color:white;
+
+    margin-bottom:32px;
+}
+
+.brand-logo{
+    width:47px;
+    height:47px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffad5f,
+            #fc8019
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(252,128,25,.35);
+
+    animation:logoFloat 3s ease-in-out infinite;
+}
+
+.brand-logo svg{
+    width:31px;
+    height:31px;
+}
+
+@keyframes logoFloat{
+    50%{
+        transform:
+            translateY(-4px)
+            rotate(2deg);
+    }
+}
+
+.brand h2{
+    font-size:23px;
+    letter-spacing:-.5px;
+}
+
+.brand span{
+    display:block;
+
+    color:#b8c8d6;
+
+    font-size:9px;
+
+    margin-top:2px;
+
+    letter-spacing:1.3px;
+
+    text-transform:uppercase;
+}
+
+
+/* Navigation */
+
+.menu-title{
+    color:#8fa6b8;
+
+    font-size:9px;
+
+    font-weight:900;
+
+    letter-spacing:1.5px;
+
+    margin:
+        20px 9px 9px;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.menu a{
+    color:#dce8f2;
+
+    text-decoration:none;
+
+    padding:13px;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    transition:
+        transform .3s ease,
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+.menu a:hover,
+.menu a.active{
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fc8019,
+            #ff9c45
+        );
+
+    transform:translateX(5px);
+
+    box-shadow:
+        0 10px 22px
+        rgba(252,128,25,.25);
+}
+
+
+/* Sidebar bottom */
+
+.sidebar-bottom{
+    position:absolute;
+
+    left:16px;
+    right:16px;
+    bottom:17px;
+
+    padding:14px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:16px;
+
+    color:#b8c8d6;
+
+    font-size:10px;
+
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.menu-toggle{
+    display:none;
+
+    position:fixed;
+
+    top:
+        max(14px, env(safe-area-inset-top));
+
+    left:
+        max(14px, env(safe-area-inset-left));
+
+    width:44px;
+    height:44px;
+
+    border:none;
+
+    border-radius:13px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fc8019,
+            #ff9a42
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(252,128,25,.30);
+
+    cursor:pointer;
+
+    z-index:110;
+
+    font-size:21px;
+
+    transition:.3s;
+}
+
+.menu-toggle:hover{
+    transform:scale(1.05);
+}
+
+.menu-toggle:active{
+    transform:scale(.94);
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+    min-width:0;
+    width:100%;
+}
+
+
+/* =========================================================
+   TOP HEADER
+========================================================= */
+
+.topbar{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:17px;
+
+    animation:dropIn .7s ease both;
+}
+
+@keyframes dropIn{
+    from{
+        opacity:0;
+        transform:translateY(-18px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.heading{
+    min-width:0;
+}
+
+.heading h1{
+    font-size:
+        clamp(23px,2.2vw,32px);
+
+    line-height:1.15;
+
+    letter-spacing:-1.2px;
+}
+
+.heading p{
+    color:var(--muted);
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    line-height:1.4;
+}
+
+
+/* Status */
+
+.status{
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 14px;
+
+    background:#fff;
+
+    border:
+        1px solid
+        #edf1f5;
+
+    border-radius:30px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(16,42,67,.06);
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+.status-dot{
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#20c997;
+
+    box-shadow:
+        0 0 0 6px
+        rgba(32,201,151,.12);
+
+    animation:blink 1.7s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:.45;
+    }
+}
+
+
+/* =========================================================
+   KPI SECTION
+========================================================= */
+
+.kpis{
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,minmax(0,1fr));
+
+    gap:13px;
+
+    margin-bottom:16px;
+}
+
+.kpi{
+    min-width:0;
+
+    background:
+        rgba(255,255,255,.93);
+
+    backdrop-filter:blur(15px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.9);
+
+    border-radius:20px;
+
+    padding:16px;
+
+    box-shadow:var(--shadow);
+
+    position:relative;
+
+    overflow:hidden;
+
+    animation:
+        rise .7s ease both;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.kpi:nth-child(2){
+    animation-delay:.08s;
+}
+
+.kpi:nth-child(3){
+    animation-delay:.16s;
+}
+
+.kpi:nth-child(4){
+    animation-delay:.24s;
+}
+
+.kpi:nth-child(5){
+    animation-delay:.32s;
+}
+
+@keyframes rise{
+    from{
+        opacity:0;
+        transform:translateY(25px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.kpi:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 22px 42px
+        rgba(252,128,25,.14);
+}
+
+.kpi::after{
+    content:"";
+
+    position:absolute;
+
+    width:85px;
+    height:85px;
+
+    right:-33px;
+    top:-33px;
+
+    border-radius:50%;
+
+    background:
+        rgba(252,128,25,.08);
+}
+
+.kpi-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+}
+
+.kpi-icon{
+    flex-shrink:0;
+
+    width:33px;
+    height:33px;
+
+    border-radius:10px;
+
+    display:grid;
+
+    place-items:center;
+
+    background:var(--swiggy-light);
+
+    color:var(--swiggy);
+
+    font-size:16px;
+}
+
+.kpi-value{
+    margin-top:9px;
+
+    font-size:
+        clamp(19px,1.9vw,26px);
+
+    font-weight:900;
+
+    letter-spacing:-.7px;
+
+    white-space:nowrap;
+}
+
+.kpi-footer{
+    margin-top:5px;
+
+    color:var(--green);
+
+    font-size:9px;
+
+    font-weight:800;
+}
+
+
+/* =========================================================
+   CHART GRID
+========================================================= */
+
+.dashboard-grid{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0,1.45fr)
+        minmax(0,1fr)
+        minmax(0,1fr);
+
+    gap:16px;
+}
+
+.card{
+    min-width:0;
+
+    background:
+        rgba(255,255,255,.94);
+
+    border:
+        1px solid
+        #edf1f5;
+
+    border-radius:20px;
+
+    padding:17px;
+
+    box-shadow:
+        0 14px 38px
+        rgba(16,42,67,.07);
+
+    animation:
+        cardIn .8s ease both;
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 22px 45px
+        rgba(16,42,67,.11);
+}
+
+@keyframes cardIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.card.large{
+    grid-column:span 2;
+}
+
+.card.wide{
+    grid-column:span 3;
+}
+
+.card-header{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    margin-bottom:12px;
+}
+
+.card-title{
+    font-size:13px;
+
+    font-weight:900;
+}
+
+.card-sub{
+    color:var(--muted);
+
+    font-size:9px;
+
+    margin-top:3px;
+
+    line-height:1.4;
+}
+
+.badge{
+    flex-shrink:0;
+
+    padding:6px 8px;
+
+    border-radius:20px;
+
+    color:var(--swiggy-dark);
+
+    background:var(--swiggy-light);
+
+    font-size:8px;
+
+    font-weight:900;
+
+    letter-spacing:.3px;
+}
+
+.chart{
+    width:100%;
+    height:255px;
+    position:relative;
+}
+
+.chart.small{
+    height:220px;
+}
+
+
+/* =========================================================
+   INSIGHTS
+========================================================= */
+
+.insights{
+    grid-column:span 3;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:13px;
+}
+
+.insight{
+    min-width:0;
+
+    padding:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #fff7ef
+        );
+
+    border:
+        1px solid
+        #f4e7db;
+
+    border-radius:17px;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.insight::after{
+    content:"";
+
+    width:70px;
+    height:70px;
+
+    position:absolute;
+
+    right:-28px;
+    bottom:-28px;
+
+    border-radius:50%;
+
+    background:
+        rgba(252,128,25,.10);
+}
+
+.insight-label{
+    color:var(--swiggy);
+
+    font-size:9px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+.insight h3{
+    font-size:16px;
+
+    margin:
+        5px 0 4px;
+}
+
+.insight p{
+    color:var(--muted);
+
+    font-size:10px;
+
+    line-height:1.55;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    text-align:center;
+
+    color:#8a96a3;
+
+    font-size:9px;
+
+    padding:
+        18px
+        0
+        max(8px,env(safe-area-inset-bottom));
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:1200px){
+
+    :root{
+        --sidebar-width:220px;
+    }
+
+    .app{
+        width:96%;
+    }
+
+    .kpis{
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
+    }
+
+    .dashboard-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .card.large{
+        grid-column:span 2;
+    }
+
+    .card.wide{
+        grid-column:span 2;
+    }
+
+    .insights{
+        grid-column:span 2;
+    }
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP
+========================================================= */
+
+@media(max-width:900px){
+
+    :root{
+        --sidebar-width:235px;
+    }
+
+    .app{
+        display:block;
+
+        width:
+            min(100% - 28px,760px);
+
+        margin:
+            14px auto;
+    }
+
+    /*
+       Sidebar becomes an off-canvas
+       slide menu.
+    */
+
+    .sidebar{
+        position:fixed;
+
+        top:0;
+        left:0;
+
+        width:var(--sidebar-width);
+
+        height:100vh;
+
+        min-height:100vh;
+
+        border-radius:0 24px 24px 0;
+
+        transform:translateX(-105%);
+
+        transition:
+            transform .38s
+            cubic-bezier(.22,.61,.36,1);
+
+        z-index:100;
+    }
+
+    .sidebar.open{
+        transform:translateX(0);
+    }
+
+    .menu-toggle{
+        display:grid;
+
+        place-items:center;
+    }
+
+    .main{
+        width:100%;
+    }
+
+    .topbar{
+        padding-left:58px;
+    }
+
+    .sidebar-bottom{
+        position:absolute;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:650px){
+
+    .app{
+        width:
+            calc(100% - 20px);
+
+        margin:
+            10px auto;
+    }
+
+    .topbar{
+        padding-left:55px;
+
+        align-items:flex-start;
+
+        flex-direction:column;
+
+        margin-bottom:14px;
+    }
+
+    .heading h1{
+        font-size:24px;
+    }
+
+    .heading p{
+        font-size:10px;
+    }
+
+    .status{
+        padding:8px 11px;
+
+        font-size:9px;
+    }
+
+    /*
+       2-column KPI layout
+       keeps dashboard compact.
+    */
+
+    .kpis{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+        gap:9px;
+    }
+
+    .kpi{
+        padding:13px;
+
+        border-radius:16px;
+    }
+
+    .kpi-head{
+        font-size:8px;
+    }
+
+    .kpi-icon{
+        width:28px;
+        height:28px;
+
+        font-size:13px;
+    }
+
+    .kpi-value{
+        font-size:18px;
+    }
+
+    .kpi-footer{
+        font-size:8px;
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+
+        gap:11px;
+    }
+
+    .card,
+    .card.large,
+    .card.wide{
+        grid-column:span 1;
+
+        padding:13px;
+
+        border-radius:17px;
+    }
+
+    .card-title{
+        font-size:12px;
+    }
+
+    .card-sub{
+        font-size:8px;
+    }
+
+    .badge{
+        font-size:7px;
+        padding:5px 6px;
+    }
+
+    .chart{
+        height:220px;
+    }
+
+    .chart.small{
+        height:205px;
+    }
+
+    .insights{
+        grid-column:span 1;
+
+        grid-template-columns:1fr;
+
+        gap:9px;
+    }
+
+    .insight{
+        padding:13px;
+    }
+
+    .insight h3{
+        font-size:14px;
+    }
+
+    .insight p{
+        font-size:9px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media(max-width:380px){
+
+    .app{
+        width:
+            calc(100% - 14px);
+
+        margin:
+            7px auto;
+    }
+
+    .kpis{
+        gap:7px;
+    }
+
+    .kpi{
+        padding:10px;
+    }
+
+    .kpi-head{
+        font-size:7px;
+    }
+
+    .kpi-value{
+        font-size:16px;
+    }
+
+    .kpi-footer{
+        font-size:7px;
+    }
+
+    .chart{
+        height:195px;
+    }
+
+    .chart.small{
+        height:185px;
+    }
+}
+
+
+/* =========================================================
+   LANDSCAPE PHONE
+========================================================= */
+
+@media(max-height:500px) and (orientation:landscape){
+
+    .sidebar{
+        overflow-y:auto;
+    }
+
+    .chart{
+        height:190px;
+    }
+
+    .chart.small{
+        height:175px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- Animated background -->
+<div class="bg-blob blob-one"></div>
+<div class="bg-blob blob-two"></div>
+
+
+<!-- Mobile overlay -->
+<div
+    class="mobile-overlay"
+    id="mobileOverlay"
+    onclick="closeSidebar()">
+</div>
+
+
+<!-- Mobile slide button -->
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Open navigation"
+    aria-expanded="false"
+    onclick="toggleSidebar()">
+    ☰
+</button>
+
+
+<div class="app">
+
+
+<!-- =======================================================
+     SIDEBAR
+======================================================= -->
+
+<aside
+    class="sidebar"
+    id="sidebar"
+    aria-label="Dashboard navigation">
+
+    <div class="brand">
+
+        <!-- Swiggy-inspired orange logo mark -->
+        <div class="brand-logo">
+
+            <svg
+                viewBox="0 0 100 100"
+                fill="none"
+                aria-label="Swiggy">
+
+                <path
+                    d="M24 30C24 21 31 15 40 15H72C81 15 87 22 87 30V66C87 78 78 87 66 87H42C31 87 23 78 23 67V42"
+                    stroke="white"
+                    stroke-width="8"
+                    stroke-linecap="round"/>
+
+                <path
+                    d="M32 42L49 57L75 31"
+                    stroke="white"
+                    stroke-width="8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"/>
+            </svg>
+
+        </div>
+
+        <div>
+            <h2>Swiggy</h2>
+            <span>Sales Intelligence</span>
+        </div>
+
+    </div>
+
+
+    <div class="menu-title">
+        ANALYTICS
+    </div>
+
+    <nav class="menu">
+
+        <a
+            class="active"
+            href="#overview"
+            onclick="closeSidebar()">
+            📊
+            <span>Overview</span>
+        </a>
+
+        <a
+            href="#trends"
+            onclick="closeSidebar()">
+            📈
+            <span>Sales Trends</span>
+        </a>
+
+        <a
+            href="#food"
+            onclick="closeSidebar()">
+            🍽️
+            <span>Food Analysis</span>
+        </a>
+
+        <a
+            href="#cities"
+            onclick="closeSidebar()">
+            🏙️
+            <span>Geography</span>
+        </a>
+
+        <a
+            href="#insights"
+            onclick="closeSidebar()">
+            💡
+            <span>Insights</span>
+        </a>
+
+    </nav>
+
+
+    <div class="menu-title">
+        PROJECT
+    </div>
+
+    <nav class="menu">
+
+        <a
+            href="#about"
+            onclick="closeSidebar()">
+            📁
+            <span>About Project</span>
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <b>Swiggy Sales Analytics</b>
+        <br>
+
+        197K+ records analyzed
+        <br>
+
+        Interactive business intelligence
+
+    </div>
+
+</aside>
+
+
+
+<!-- =======================================================
+     MAIN CONTENT
+======================================================= -->
+
+<main
+    class="main"
+    id="overview">
+
+
+<!-- Header -->
+
+<header class="topbar">
+
+    <div class="heading">
+
+        <h1>
+            Swiggy Sales Analytics 📊
+        </h1>
+
+        <p>
+            Food delivery performance • trends • customer insights
+        </p>
+
+    </div>
+
+
+    <div class="status">
+
+        <span class="status-dot"></span>
+
+        Dashboard Active
+
+    </div>
+
+</header>
+
+
+
+<!-- =======================================================
+     KPI CARDS
+======================================================= -->
+
+<section class="kpis">
+
+
+    <!-- Total Sales -->
+
+    <div class="kpi">
+
+        <div class="kpi-head">
+
+            Total Sales
+
+            <div class="kpi-icon">
+                ₹
+            </div>
+
+        </div>
+
+        <div class="kpi-value">
+            ₹53.01M
+        </div>
+
+        <div class="kpi-footer">
+            ▲ Overall revenue
+        </div>
+
+    </div>
+
+
+    <!-- Average Rating -->
+
+    <div class="kpi">
+
+        <div class="kpi-head">
+
+            Average Rating
+
+            <div class="kpi-icon">
+                ★
+            </div>
+
+        </div>
+
+        <div class="kpi-value">
+            4.34
+        </div>
+
+        <div class="kpi-footer">
+            ● Strong customer rating
+        </div>
+
+    </div>
+
+
+    <!-- AOV -->
+
+    <div class="kpi">
+
+        <div class="kpi-head">
+
+            Average Order Value
+
+            <div class="kpi-icon">
+                🛒
+            </div>
+
+        </div>
+
+        <div class="kpi-value">
+            ₹268.51
+        </div>
+
+        <div class="kpi-footer">
+            Per transaction
+        </div>
+
+    </div>
+
+
+    <!-- Rating Count -->
+
+    <div class="kpi">
+
+        <div class="kpi-head">
+
+            Rating Count
+
+            <div class="kpi-icon">
+                ★
+            </div>
+
+        </div>
+
+        <div class="kpi-value">
+            5.59M
+        </div>
+
+        <div class="kpi-footer">
+            Customer ratings
+        </div>
+
+    </div>
+
+
+    <!-- Orders -->
+
+    <div class="kpi">
+
+        <div class="kpi-head">
+
+            Total Orders
+
+            <div class="kpi-icon">
+                📦
+            </div>
+
+        </div>
+
+        <div class="kpi-value">
+            197.43K
+        </div>
+
+        <div class="kpi-footer">
+            Records analyzed
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =======================================================
+     CHARTS
+======================================================= -->
+
+<section
+    class="dashboard-grid"
+    id="trends">
+
+
+<!-- =====================================================
+     MONTHLY SALES
+===================================================== -->
+
+<div class="card large">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Monthly Sales Performance
+            </div>
+
+            <div class="card-sub">
+                Track revenue movement across months
+            </div>
+
+        </div>
+
+        <div class="badge">
+            SALES TREND
+        </div>
+
+    </div>
+
+    <div class="chart">
+
+        <canvas
+            id="monthlyChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOD TYPE
+===================================================== -->
+
+<div
+    class="card"
+    id="food">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Food Type Mix
+            </div>
+
+            <div class="card-sub">
+                Veg vs Non-Veg sales
+            </div>
+
+        </div>
+
+        <div class="badge">
+            64 / 36
+        </div>
+
+    </div>
+
+    <div class="chart small">
+
+        <canvas
+            id="foodChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     DAILY SALES
+===================================================== -->
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Daily Sales
+            </div>
+
+            <div class="card-sub">
+                Sales distribution by weekday
+            </div>
+
+        </div>
+
+        <div class="badge">
+            SATURDAY #1
+        </div>
+
+    </div>
+
+    <div class="chart small">
+
+        <canvas
+            id="dailyChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     QUARTERLY PERFORMANCE
+===================================================== -->
+
+<div class="card">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Quarterly Performance
+            </div>
+
+            <div class="card-sub">
+                Quarterly sales comparison
+            </div>
+
+        </div>
+
+        <div class="badge">
+            Q2 LEADER
+        </div>
+
+    </div>
+
+    <div class="chart small">
+
+        <canvas
+            id="quarterChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TOP CITIES
+===================================================== -->
+
+<div
+    class="card"
+    id="cities">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Top Cities by Sales
+            </div>
+
+            <div class="card-sub">
+                Highest-performing markets
+            </div>
+
+        </div>
+
+        <div class="badge">
+            TOP 5
+        </div>
+
+    </div>
+
+    <div class="chart small">
+
+        <canvas
+            id="cityChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     WEEKLY SALES
+===================================================== -->
+
+<div class="card wide">
+
+    <div class="card-header">
+
+        <div>
+
+            <div class="card-title">
+                Weekly Sales Trend
+            </div>
+
+            <div class="card-sub">
+                Detailed weekly revenue movement
+            </div>
+
+        </div>
+
+        <div class="badge">
+            WEEKLY VIEW
+        </div>
+
+    </div>
+
+    <div class="chart">
+
+        <canvas
+            id="weeklyChart">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     INSIGHTS
+===================================================== -->
+
+<section
+    class="insights"
+    id="insights">
+
+
+    <div class="insight">
+
+        <div class="insight-label">
+            🏆 Top Market
+        </div>
+
+        <h3>
+            Bengaluru
+        </h3>
+
+        <p>
+            Leads the Top 5 cities with approximately
+            <b>₹5.46M</b> in sales.
+        </p>
+
+    </div>
+
+
+    <div class="insight">
+
+        <div class="insight-label">
+            🥗 Food Preference
+        </div>
+
+        <h3>
+            Veg — 64%
+        </h3>
+
+        <p>
+            Vegetarian food contributes the larger share
+            of sales at approximately <b>₹34.2M</b>.
+        </p>
+
+    </div>
+
+
+    <div class="insight">
+
+        <div class="insight-label">
+            📅 Best Day
+        </div>
+
+        <h3>
+            Saturday
+        </h3>
+
+        <p>
+            Saturday records the highest daily sales at
+            approximately <b>₹7.78M</b>.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+</section>
+
+
+
+<!-- Footer -->
+
+<div
+    class="footer"
+    id="about">
+
+    Swiggy Sales Analysis • Excel Analytics Project •
+    Responsive Portfolio Dashboard
+
+</div>
+
+
+</main>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SIDEBAR / SLIDE MENU
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const overlay =
+    document.getElementById("mobileOverlay");
+
+const menuToggle =
+    document.getElementById("menuToggle");
+
+
+function openSidebar(){
+
+    sidebar.classList.add("open");
+
+    overlay.classList.add("show");
+
+    menuToggle.setAttribute(
+        "aria-expanded",
+        "true"
+    );
+
+    menuToggle.innerHTML="✕";
+}
+
+
+function closeSidebar(){
+
+    sidebar.classList.remove("open");
+
+    overlay.classList.remove("show");
+
+    menuToggle.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+    menuToggle.innerHTML="☰";
+}
+
+
+function toggleSidebar(){
+
+    if(
+        sidebar.classList.contains("open")
+    ){
+
+        closeSidebar();
+
+    }else{
+
+        openSidebar();
+
+    }
+
+}
+
+
+/* Close menu with Escape */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key==="Escape"){
+
+            closeSidebar();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CHART GLOBAL CONFIGURATION
+========================================================= */
+
+Chart.defaults.font.family =
+    '"Segoe UI", Arial, sans-serif';
+
+Chart.defaults.color =
+    "#718096";
+
+Chart.defaults.animation.duration =
+    1200;
+
+Chart.defaults.animation.easing =
+    "easeOutQuart";
+
+
+const SWIGGY =
+    "#fc8019";
+
+const NAVY =
+    "#173f5f";
+
+const ORANGE_LIGHT =
+    "rgba(252,128,25,.13)";
+
+
+/* =========================================================
+   MONTHLY SALES
+========================================================= */
+
+new Chart(
+    document.getElementById("monthlyChart"),
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug"
+            ],
+
+            datasets:[{
+
+                label:"Sales",
+
+                data:[
+                    6.80,
+                    6.25,
+                    6.58,
+                    6.60,
+                    6.77,
+                    6.52,
+                    6.63,
+                    6.75
+                ],
+
+                borderColor:
+                    SWIGGY,
+
+                backgroundColor:
+                    ORANGE_LIGHT,
+
+                fill:true,
+
+                tension:.42,
+
+                borderWidth:3,
+
+                pointRadius:4,
+
+                pointHoverRadius:8,
+
+                pointBackgroundColor:
+                    "#fff",
+
+                pointBorderColor:
+                    SWIGGY,
+
+                pointBorderWidth:3
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            interaction:{
+                intersect:false,
+                mode:"index"
+            },
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    titleColor:"#fff",
+
+                    bodyColor:"#fff",
+
+                    padding:12,
+
+                    displayColors:false,
+
+                    callbacks:{
+
+                        label:
+                        context =>
+                            " Sales: ₹"
+                            +
+                            context.parsed.y.toFixed(2)
+                            +
+                            "M"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:false,
+
+                    grid:{
+                        color:
+                            "rgba(16,42,67,.06)"
+                    },
+
+                    ticks:{
+
+                        callback:
+                        value =>
+                            "₹"+value+"M"
+
+                    }
+
+                },
+
+                x:{
+
+                    grid:{
+                        display:false
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   FOOD TYPE
+========================================================= */
+
+new Chart(
+    document.getElementById("foodChart"),
+    {
+
+        type:"doughnut",
+
+        data:{
+
+            labels:[
+                "Veg",
+                "Non-Veg"
+            ],
+
+            datasets:[{
+
+                data:[
+                    34.2,
+                    18.8
+                ],
+
+                backgroundColor:[
+                    SWIGGY,
+                    NAVY
+                ],
+
+                borderColor:"#fff",
+
+                borderWidth:6,
+
+                hoverOffset:14
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            cutout:"72%",
+
+            plugins:{
+
+                legend:{
+
+                    position:"bottom",
+
+                    labels:{
+
+                        usePointStyle:true,
+
+                        padding:15,
+
+                        font:{
+                            size:10,
+                            weight:"700"
+                        }
+
+                    }
+
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    callbacks:{
+
+                        label:
+                        context => {
+
+                            const total =
+                                53;
+
+                            const percentage =
+                                (
+                                    context.raw /
+                                    total *
+                                    100
+                                ).toFixed(0);
+
+                            return (
+                                " "
+                                +
+                                context.label
+                                +
+                                ": ₹"
+                                +
+                                context.raw
+                                +
+                                "M ("
+                                +
+                                percentage
+                                +
+                                "%)"
+                            );
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   DAILY SALES
+========================================================= */
+
+new Chart(
+    document.getElementById("dailyChart"),
+    {
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+                "Sun"
+            ],
+
+            datasets:[{
+
+                label:"Sales",
+
+                data:[
+                    7.45,
+                    7.36,
+                    7.54,
+                    7.66,
+                    7.58,
+                    7.78,
+                    7.64
+                ],
+
+                backgroundColor:[
+
+                    "#ffb16d",
+                    "#ffb16d",
+                    "#ffb16d",
+                    "#ffb16d",
+                    "#ffb16d",
+
+                    SWIGGY,
+
+                    "#ffb16d"
+
+                ],
+
+                borderRadius:8,
+
+                borderSkipped:false
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    callbacks:{
+
+                        label:
+                        context =>
+                            " ₹"
+                            +
+                            context.raw.toFixed(2)
+                            +
+                            "M"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:false,
+
+                    grid:{
+                        color:
+                            "rgba(16,42,67,.06)"
+                    },
+
+                    ticks:{
+
+                        callback:
+                        value =>
+                            "₹"+value+"M"
+
+                    }
+
+                },
+
+                x:{
+
+                    grid:{
+                        display:false
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   QUARTERLY SALES
+========================================================= */
+
+new Chart(
+    document.getElementById("quarterChart"),
+    {
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+                "Q1",
+                "Q2",
+                "Q3"
+            ],
+
+            datasets:[{
+
+                label:"Sales",
+
+                data:[
+                    19.7,
+                    19.9,
+                    13.4
+                ],
+
+                backgroundColor:
+                    SWIGGY,
+
+                borderRadius:8,
+
+                borderSkipped:false
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    callbacks:{
+
+                        label:
+                        context =>
+                            " Sales: ₹"
+                            +
+                            context.raw
+                            +
+                            "M"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:true,
+
+                    grid:{
+                        color:
+                            "rgba(16,42,67,.06)"
+                    },
+
+                    ticks:{
+
+                        callback:
+                        value =>
+                            "₹"+value+"M"
+
+                    }
+
+                },
+
+                x:{
+
+                    grid:{
+                        display:false
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   TOP CITIES
+========================================================= */
+
+new Chart(
+    document.getElementById("cityChart"),
+    {
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+
+                "Bengaluru",
+                "Lucknow",
+                "Hyderabad",
+                "Mumbai",
+                "New Delhi"
+
+            ],
+
+            datasets:[{
+
+                label:"Sales",
+
+                data:[
+
+                    5.46,
+                    3.12,
+                    3.02,
+                    3.02,
+                    2.83
+
+                ],
+
+                backgroundColor:[
+
+                    SWIGGY,
+                    NAVY,
+                    "#2c6287",
+                    "#4c7d9a",
+                    "#7398ad"
+
+                ],
+
+                borderRadius:7,
+
+                borderSkipped:false
+
+            }]
+
+        },
+
+        options:{
+
+            indexAxis:"y",
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    callbacks:{
+
+                        label:
+                        context =>
+                            " ₹"
+                            +
+                            context.raw.toFixed(2)
+                            +
+                            "M"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                x:{
+
+                    beginAtZero:true,
+
+                    grid:{
+                        color:
+                            "rgba(16,42,67,.06)"
+                    },
+
+                    ticks:{
+
+                        callback:
+                        value =>
+                            "₹"+value+"M"
+
+                    }
+
+                },
+
+                y:{
+
+                    grid:{
+                        display:false
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   WEEKLY SALES
+========================================================= */
+
+new Chart(
+    document.getElementById("weeklyChart"),
+    {
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+
+                "W1","W2","W3","W4",
+                "W5","W6","W7","W8",
+                "W9","W10","W11","W12",
+                "W13","W14","W15","W16",
+                "W17","W18","W19","W20",
+                "W21","W22","W23","W24",
+                "W25","W26","W27","W28",
+                "W29","W30","W31","W32",
+                "W33","W34","W35","W36"
+
+            ],
+
+            datasets:[{
+
+                label:"Weekly Sales",
+
+                data:[
+
+                    .82,1.52,1.51,1.50,
+                    1.53,1.49,1.51,1.73,
+                    1.48,1.47,1.49,1.50,
+                    1.48,1.52,1.50,1.53,
+                    1.51,1.50,1.51,1.52,
+                    1.50,1.51,1.50,1.49,
+                    1.51,1.52,1.50,1.48,
+                    1.50,1.49,1.51,1.52,
+                    1.50,1.49,1.52,.18
+
+                ],
+
+                backgroundColor:
+                    SWIGGY,
+
+                borderRadius:5,
+
+                hoverBackgroundColor:
+                    NAVY
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+                tooltip:{
+
+                    backgroundColor:
+                        "#102a43",
+
+                    callbacks:{
+
+                        label:
+                        context =>
+                            " ₹"
+                            +
+                            context.raw.toFixed(2)
+                            +
+                            "M"
+
+                    }
+
+                }
+
+            },
+
+            scales:{
+
+                y:{
+
+                    beginAtZero:true,
+
+                    grid:{
+                        color:
+                            "rgba(16,42,67,.06)"
+                    },
+
+                    ticks:{
+
+                        callback:
+                        value =>
+                            "₹"+value+"M"
+
+                    }
+
+                },
+
+                x:{
+
+                    grid:{
+                        display:false
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
