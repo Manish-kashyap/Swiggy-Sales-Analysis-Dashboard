@@ -8,7 +8,7 @@
 
 ## 🚀 Live Dashboard
 
-[View Interactive Swiggy Dashboard](https://manish-kashyap.github.io/Swiggy-Sales-Analysis/)
+[View Interactive Swiggy Dashboard](https://manish-kashyap.github.io/Swiggy-Sales-Analysis-Dashboard/)
 
 # 📌 Project Overview
 
