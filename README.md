@@ -136,7 +136,7 @@ Based on the dashboard analysis:
 
 > Dashboard Screenshot
 
-![Dashboard Preview](Dashboard.png)
+![Dashboard Preview](DASHBOARD.png)
 
 ---
 
