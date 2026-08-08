@@ -139,18 +139,3 @@ Based on the dashboard analysis:
 ![Dashboard Preview](DASHBOARD.png)
 
 ---
-
-# 🚀 Skills Demonstrated
-
-- Advanced Excel
-- Dashboard Development
-- Data Cleaning
-- Data Validation
-- Pivot Table Analysis
-- KPI Reporting
-- Sales Analysis
-- Food Delivery Analytics
-- Data Visualization
-- Business Reporting
-- Interactive Dashboard Designwiggy Raw Data Excel.xlsx
-└── README.m
