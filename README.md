@@ -152,7 +152,5 @@ Based on the dashboard analysis:
 - Food Delivery Analytics
 - Data Visualization
 - Business Reporting
-- Interactive Dashboard Design
-
-├── Swiggy Raw Data Excel.xlsx
+- Interactive Dashboard Designwiggy Raw Data Excel.xlsx
 └── README.md
