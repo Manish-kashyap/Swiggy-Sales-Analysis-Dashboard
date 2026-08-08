@@ -6,6 +6,10 @@
 
 ---
 
+## 🚀 Live Dashboard
+
+[View Interactive Swiggy Dashboard](https://manish-kashyap.github.io/Swiggy-Sales-Analysis/)
+
 # 📌 Project Overview
 
 This project presents an interactive **Swiggy Sales Analysis Dashboard** developed in **Microsoft Excel** using a Swiggy food delivery dataset containing **197,430 records**.
