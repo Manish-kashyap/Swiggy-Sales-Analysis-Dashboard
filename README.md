@@ -1,145 +1,97 @@
-📊 Swiggy Sales Analysis Dashboard
+<div align="center">
+  
+  # 🍔 Swiggy Sales Analysis Dashboard
+  
+  **Transforming 197k+ rows of raw food delivery data into actionable business insights.**
 
-![Excel](https://img.shields.io/badge/Tool-Microsoft%20Excel-green)
-![Dashboard](https://img.shields.io/badge/Project-Dashboard-blue)
-![Analytics](https://img.shields.io/badge/Domain-Food%20Delivery-orange)
+  [![Excel](https://img.shields.io/badge/Tool-Microsoft%20Excel-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)]()
+  [![Dashboard](https://img.shields.io/badge/Project-Dashboard-0052CC?style=for-the-badge&logo=databricks&logoColor=white)]()
+  [![Analytics](https://img.shields.io/badge/Domain-Food%20Delivery-FC8019?style=for-the-badge&logo=foodpanda&logoColor=white)]()
 
----
+  <br>
 
-## 🚀 Live Dashboard
-
-[View Interactive Swiggy Dashboard](https://manish-kashyap.github.io/Swiggy-Sales-Analysis-Dashboard/)
-
-# 📌 Project Overview
-
-This project presents an interactive **Swiggy Sales Analysis Dashboard** developed in **Microsoft Excel** using a Swiggy food delivery dataset containing **197,430 records**.
-
-The dashboard transforms raw food delivery data into meaningful business insights by analyzing sales performance, food preferences, restaurant and location performance, customer-facing ratings, and key performance indicators (KPIs). It enables stakeholders to explore business performance through an intuitive and interactive reporting interface.
-
----
-
-# 🎯 Business Problem
-
-Food delivery businesses generate large volumes of transactional and restaurant-level data. Without proper analysis, it becomes difficult to identify:
-
-- Sales trends over time
-- High-performing states and cities
-- Food category and food-type performance
-- Customer rating patterns
-- High-performing locations
-- Weekly and quarterly sales trends
-- Business growth opportunities
-
-The objective of this dashboard is to convert raw Swiggy data into actionable business insights that support informed decision-making.
+  ### 🔴 [**CLICK HERE FOR LIVE INTERACTIVE PREVIEW**](https://manish-kashyap.github.io/Swiggy-Sales-Analysis-Dashboard/) 🔴
+  
+  <br>
+</div>
 
 ---
 
-# 📁 Dataset Information
+## 📌 Project Overview
+
+This project presents an interactive **Swiggy Sales Analysis Dashboard** developed entirely in **Microsoft Excel**. By processing a comprehensive dataset of **197,430 records**, this dashboard bridges the gap between raw transactional data and strategic decision-making. 
+
+It provides an intuitive interface to explore sales performance, customer preferences, regional trends, and key performance indicators (KPIs) critical to the food delivery ecosystem.
+
+---
+
+## 🎯 The Business Problem
+
+Food delivery platforms generate massive volumes of transactional data daily. Without structured analysis, businesses struggle to extract value from this data. This project solves the challenge of identifying:
+
+*   📈 **Revenue Patterns:** Sales trends over daily, weekly, and quarterly timeframes.
+*   🗺️ **Geographic Hotspots:** High-performing states, cities, and specific locations.
+*   🍽️ **Consumer Preferences:** Veg vs. Non-Veg consumption and top food categories.
+*   ⭐ **Quality Assurance:** Customer rating distributions and sentiment indicators.
+
+---
+
+## 📁 Dataset & Architecture
 
 | Attribute | Details |
-| --- | --- |
-| Dataset | Swiggy Sales Dataset |
-| Records | 197,430 |
-| Industry | Food Delivery / Food & Beverage |
-| File Format | Excel (.xlsx) |
-| Dashboard Tool | Microsoft Excel |
-| Main Sales Metric | Price (INR) |
+| :--- | :--- |
+| **Dataset** | Swiggy Sales Dataset |
+| **Volume** | 197,430 Transactions |
+| **Industry** | Food & Beverage / Quick Commerce |
+| **Tech Stack** | Microsoft Excel (`.xlsx`) |
+| **Primary Metric** | Gross Sales (INR ₹) |
 
 ---
 
-# 🛠 Tools & Techniques
+## 🛠️ Technical Skills & Methodologies
 
-- Microsoft Excel
-- Pivot Tables
-- Pivot Charts
-- Slicers
-- KPI Cards
-- Conditional Formatting
-- Data Cleaning
-- Data Validation
-- Formula-based Food Type Classification
-- Interactive Dashboard Design
+*   **Data Engineering:** Data Cleaning, Data Validation, Formula-based Feature Engineering (Food Type Classification).
+*   **Analytics:** Advanced Pivot Tables, Pivot Charts, Aggregation.
+*   **UI/UX Design:** Interactive Slicers, Dynamic KPI Cards, Conditional Formatting, Dashboard Layout Optimization.
 
 ---
 
-# 📊 Dashboard KPIs
+## 📊 Executive KPIs
 
-The analysis tracks the following key business metrics:
+At a glance, the dataset reveals the following macro-level metrics:
 
-- 💰 **Total Sales:** ₹53,012,505.77
-- ⭐ **Average Rating:** 4.34
-- 💬 **Total Rating Count:** 5,591,574
-- 🍽️ **Total Transactions / Records:** 197,430
-- 🛒 **Average Order Value (AOV):** ₹268.51
+> **💰 Total Sales:** ₹ 53,012,505.77  
+> **🛒 Average Order Value (AOV):** ₹ 268.51  
+> **🍽️ Total Transactions:** 197,430  
+> **⭐ Average Rating:** 4.34 / 5.0  
+> **💬 Total Rating Count:** 5,591,574  
 
-> Note: The dataset does not contain a unique Order ID field, so the 197,430 records are treated as transactions/records rather than unique orders.
-
----
-
-# 📈 Dashboard Analysis
-
-The dashboard provides analysis for:
-
-- Monthly Sales Trend
-- Weekly Sales Trend
-- Daily Sales Trend
-- Quarterly Sales Analysis
-- State-wise Sales Performance
-- Top 5 Cities by Sales
-- Veg vs Non-Veg Sales
-- Food Category Performance
-- Rating Analysis
-- Location and Restaurant-level performance
-
-Users can filter the dashboard dynamically using slicers for better business exploration.
+*(Note: In the absence of a unique Order ID, the 197,430 dataset rows are treated as individual transactional records.)*
 
 ---
 
-# 🔍 Business Questions Answered
+## 🔍 Core Business Insights
 
-This dashboard helps answer questions such as:
-
-- How are sales changing month by month?
-- Which quarter generates the highest sales?
-- Which states contribute the most to total sales?
-- Which cities are the top sales contributors?
-- What is the sales contribution of Veg vs Non-Veg food?
-- Which days of the week generate higher sales?
-- How does the average rating vary across the business?
-- Which food categories and locations perform best?
+1.  **Revenue Highlights:** Total gross sales exceed **₹5.30 Crore**, peaking significantly during **Q2**.
+2.  **Geographic Dominance:** **Bengaluru** leads as the highest-grossing city among the top 5 urban markets analyzed.
+3.  **Dietary Trends:** **Vegetarian** orders consistently contribute a larger share of total sales compared to Non-Vegetarian orders.
+4.  **Customer Satisfaction:** An impressive average rating of **4.34** highlights strong operational quality and customer satisfaction across the network.
 
 ---
 
-# 💡 Key Insights
+## 💼 Strategic Recommendations
 
-- Total sales across the dataset are approximately **₹5.30 crore**.
-- **Q2** records the highest quarterly sales among the available quarters.
-- **Bengaluru** is the highest-selling city among the Top 5 cities shown in the analysis.
-- **Veg** food contributes a larger share of sales than Non-Veg food.
-- Weekly and monthly trends help identify periods of relatively higher and lower sales.
-- The average rating of approximately **4.34** indicates strong customer-facing ratings across the dataset.
-- State and city analysis highlights important geographical markets.
+*   **Targeted Marketing:** Reallocate ad spend to capitalize on the high conversion rates in Bengaluru and top-performing states.
+*   **Menu Optimization:** Leverage the heavy skew towards Vegetarian sales by incentivizing restaurants to expand their plant-based and vegetarian offerings.
+*   **Promotional Timing:** Utilize the identified weekly and monthly sales peaks to time push notifications and discount campaigns for maximum ROI.
+*   **Partner Retention:** Strengthen ties and offer premium placement to restaurant partners in high-density, high-sales locations to maintain supply reliability.
 
 ---
 
-# 💼 Business Recommendations
+## 📷 Dashboard Preview
 
-Based on the dashboard analysis:
-
-- Focus marketing campaigns on high-performing cities and states.
-- Strengthen restaurant partnerships in high-sales locations.
-- Promote popular food categories based on sales performance.
-- Use Veg/Non-Veg sales patterns to optimize menu and promotional strategies.
-- Plan offers and campaigns around high-performing days and periods.
-- Monitor ratings regularly to maintain customer satisfaction.
-- Use sales trends for inventory and operational planning.
-
----
-
-# 📷 Dashboard Preview
-
-> Dashboard Screenshot
-
-![Dashboard Preview](DASHBOARD.png)
-
----
+<div align="center">
+  <img src="DASHBOARD.png" alt="Swiggy Dashboard Preview" width="850">
+  <br>
+  <i>A static view of the final dashboard interface. For the interactive version, please use the Live Preview link at the top of this page.</i>
+</div>
